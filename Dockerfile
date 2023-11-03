@@ -2,12 +2,17 @@ FROM httpd:alpine
 
 # Set the timezone
 ENV TZ=Europe/Kiev
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+# RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-# Remove the default index.html
-RUN rm -f /usr/local/apache2/htdocs/index.html
+# Update and install PHP and Apache PHP module
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
+    apk --no-cache update && \
+        apk add --no-cache php-apache2 && \
+            rm -rf /var/cache/apk/* && \
+                rm -f /usr/local/apache2/htdocs/index.html && \
+                    sed -i '/LoadModule php_module/s/^#//g' /usr/local/apache2/conf/httpd.conf
 
-# Copy PHP application files
+COPY httpd.conf /usr/local/apache2/conf/httpd.conf 
 COPY src/index.php /usr/local/apache2/htdocs/
 
 # Expose port 80

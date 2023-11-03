@@ -9,7 +9,6 @@
         echo "<br>Server IP Address is: $ip_server" 
   ?>
               <p>
-  
                <b>
                    <font color="red">Application Version 1.3
                  </b>
