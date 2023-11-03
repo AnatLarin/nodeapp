@@ -1,14 +1,14 @@
-FROM ubuntu
+FROM httpd:alpine
 
- ENV TZ=Europe/Kiev
- 
- 
+# Set the timezone
+ENV TZ=Europe/Kiev
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
- RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && apt update && apt install -y apache2 php    
- RUN rm -rf /var/www/html/index.html
+# Remove the default index.html
+RUN rm -f /usr/local/apache2/htdocs/index.html
 
- COPY src/index.php /var/www/html
- 
- EXPOSE 80
+# Copy PHP application files
+COPY src/index.php /usr/local/apache2/htdocs/
 
- CMD ["apachectl", "-D", "FOREGROUND"]
+# Expose port 80
+EXPOSE 80
